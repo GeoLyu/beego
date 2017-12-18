@@ -26,6 +26,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	//	excel opensource lib
+	"github.com/360EntSecGroup-Skylar/excelize"
 )
 
 // fileLogWriter implements LoggerInterface.
@@ -95,14 +98,40 @@ func (w *fileLogWriter) Init(jsonConfig string) error {
 	}
 	w.suffix = filepath.Ext(w.Filename)
 	w.fileNameOnly = strings.TrimSuffix(w.Filename, w.suffix)
+
 	if w.suffix == "" {
 		w.suffix = ".log"
 	}
-	err = w.startLogger()
+
+	if w.suffix == "xls" {
+		err = w.startLoggerXls()
+	} else {
+		err = w.startLogger()
+	}
 	return err
 }
 
 // start file logger. create log file and set to locker-inside file writer.
+func (w *fileLogWriter) startLoggerXls(suffix string) error {
+	file, err := w.createXlsFile()
+	if err != nil {
+		return err
+	}
+
+
+	return nil
+}
+
+func (w *fileLogWriter) insertXls() {
+
+}
+
+func (w *fileLogWriter) createXlsFile() (*excelize.File, error) {
+	xlsx := excelize.NewFile()
+	err := xlsx.SaveAs(fmt.Sprintf("./%x.%x",[]byte(w.Filename),[]byte(w.suffix)))
+	return xlsx, err
+}
+
 func (w *fileLogWriter) startLogger() error {
 	file, err := w.createLogFile()
 	if err != nil {

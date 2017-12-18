@@ -62,6 +62,7 @@ const (
 const levelLoggerImpl = -1
 
 // Name for adapter with beego official support
+// 공식 지원 로그 방식
 const (
 	AdapterConsole   = "console"
 	AdapterFile      = "file"
@@ -72,9 +73,11 @@ const (
 	AdapterJianLiao  = "jianliao"
 	AdapterSlack     = "slack"
 	AdapterAliLS     = "alils"
+	AdapterXls	     = "xls"
 )
 
 // Legacy log level constants to ensure backwards compatibility.
+// 로그 레벨
 const (
 	LevelInfo  = LevelInformational
 	LevelTrace = LevelDebug
@@ -84,6 +87,7 @@ const (
 type newLoggerFunc func() Logger
 
 // Logger defines the behavior of a log provider.
+// 로그 인터페이스
 type Logger interface {
 	Init(config string) error
 	WriteMsg(when time.Time, msg string, level int) error
@@ -186,6 +190,7 @@ func (bl *BeeLogger) setLogger(adapterName string, configs ...string) error {
 		}
 	}
 
+	// 로깅
 	log, ok := adapters[adapterName]
 	if !ok {
 		return fmt.Errorf("logs: unknown adaptername %q (forgotten Register?)", adapterName)
